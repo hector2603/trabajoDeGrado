@@ -15,6 +15,8 @@ class RedNeuronal(object):
     def __init__(self):
         factorEntrenamiento = 0.1;
         errorPermitido = 0.1;
+        #entradaDeseada = [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1]];
+        #salidaDeseada = [0,1,1,0,1,0,0,1];
         entradaDeseada = [[-1,-1],[-1,1],[1,-1],[1,1]];
         salidaDeseada = [0,1,1,0];
         pesosCapaOculta,pesosCapaSalida = self.backpropagation(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada)
@@ -50,6 +52,7 @@ class RedNeuronal(object):
     def backpropagation(self,entrenamiento,errorPermitido,entradaDeseada,salidaDeseada):
         
         pesosCapaOculta = np.random.rand(5,2) #np.array([[0.3568718 ,  0.6821255],[0.0093142 ,  0.2266969],[0.0093142 ,  0.2266969],[0.0093142 ,  0.2266969]])#pesos de la capa oculta, deben ser aleatorios
+        pesosCapaOculta2 = np.random.rand(5,5) #pesos de la capa oculta 2
         pesosCapaSalida = np.random.rand(5)  #np.array([0.69900,0.50459,0.5859,0.4789])# pesos de la capa de salida
         
         elementos = np.random.permutation(math.ceil(len(entradaDeseada)*0.8)) # lista desordenada para el entrenamiento
