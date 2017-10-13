@@ -5,6 +5,7 @@ Created on 12/10/2017
 '''
 import math
 import numpy as np
+from Datos.Datos import Datos
 
 class RedNeuronal(object):
     '''
@@ -17,10 +18,13 @@ class RedNeuronal(object):
         errorPermitido = 0.1;
         #entradaDeseada = [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1]];
         #salidaDeseada = [0,1,1,0,1,0,0,1];
-        entradaDeseada = [[-1,-1],[-1,1],[1,-1],[1,1]];
-        salidaDeseada = [0,1,1,0]; 
-        #pesosCapaOculta,pesosCapaSalida = self.backpropagation(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,5,5)
-        #pesosCapaOculta,pesosCapaSalida = self.backpropagation1CapaOculta(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,8)
+        #entradaDeseada = [[-1,-1],[-1,1],[1,-1],[1,1]];
+        #salidaDeseada = [0,1,1,0];
+        datos = Datos()
+        entradaDeseada = datos.Datos
+        salidaDeseada = datos.Resultado
+        #pesosCapaOculta,pesosCapaSalida = self.backpropagation(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,60,60)
+        pesosCapaOculta,pesosCapaSalida = self.backpropagation1CapaOculta(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,120)
 
     def sigmoide(self,x):
         return 1 / (1 + math.exp(-x))
@@ -95,7 +99,7 @@ class RedNeuronal(object):
                 for j in range(len(entradaNetaCapaOculta)):
                     errorNeuronaCapaOculta1 = 0
                     for k in range(len(errorNeuronasCapaOculta2)):
-                        errorNeuronaCapaOculta1 += pesosCapaOculta2Actual[j][k]*errorNeuronasCapaOculta2[k]
+                        errorNeuronaCapaOculta1 += pesosCapaOculta2Actual[k][j]*errorNeuronasCapaOculta2[k]
                     errorNeuronaCapaOculta1 = errorNeuronaCapaOculta1*self.derivada(entradaNetaCapaOculta[j])
                     for k in range(len(pesosCapaOculta[j])):
                         pesosCapaOculta[j][k] += entrenamiento*errorNeuronaCapaOculta1*patronIn[k]
