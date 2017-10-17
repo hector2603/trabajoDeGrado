@@ -24,7 +24,7 @@ class RedNeuronal(object):
         entradaDeseada = datos.Datos
         salidaDeseada = datos.Resultado
         #pesosCapaOculta,pesosCapaSalida = self.backpropagation(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,60,60)
-        pesosCapaOculta,pesosCapaSalida = self.backpropagation1CapaOculta(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,120)
+        pesosCapaOculta,pesosCapaSalida = self.backpropagation1CapaOculta(factorEntrenamiento, errorPermitido, entradaDeseada, salidaDeseada,19)
 
     def sigmoide(self,x):
         return 1 / (1 + math.exp(-x))
@@ -107,6 +107,7 @@ class RedNeuronal(object):
     
                 #Calculamos el error
                 error = 0
+                mejorError=99999999
                 for j in range(len(entradaDeseada)):
                     entrada = entradaDeseada[j]
                     salidaEsperada = salidaDeseada[j]
@@ -114,7 +115,17 @@ class RedNeuronal(object):
                     error += 0.5*(salida - salidaEsperada)**2
                     
                 print("error global: {}".format(error))
-                
+                if(error<mejorError):
+                    F = open("matriz","w")
+                    F.write("pesos capa oculta 1")
+                    F.write(pesosCapaOculta)
+                    F.write("pesos capa oculta 2")
+                    F.write(pesosCapaOculta2)
+                    F.write("pesos capa salida")
+                    F.write(pesosCapaSalida)
+                    F.write("mejor error")
+                    F.write(mejorError)
+                    F.close()
                 if(error <errorPermitido):
                     print("salio")
                     seguir = False
@@ -183,6 +194,7 @@ class RedNeuronal(object):
     
                 #Calculamos el error
                 error = 0
+                mejorError=99999
                 for j in range(len(entradaDeseada)):
                     entrada = entradaDeseada[j]
                     salidaEsperada = salidaDeseada[j]
@@ -190,7 +202,17 @@ class RedNeuronal(object):
                     error += 0.5*(salida - salidaEsperada)**2
                     
                 print("error global: {}".format(error))
-                
+                if(error<mejorError):
+                    mejorError = error
+                    F = open("matriz.txt","w")
+                    F.write("pesos capa oculta 1")
+                    for m in range(len(pesosCapaOculta)):
+                            F.write(str(pesosCapaOculta[m]))
+                    F.write("pesos capa salida")
+                    F.write(str(pesosCapaSalida))
+                    F.write("mejor error")
+                    F.write(str(mejorError))
+                    F.close()
                 if(error <errorPermitido):
                     print("salio")
                     seguir = False

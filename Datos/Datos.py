@@ -6,22 +6,24 @@ Created on 3/10/2017
 class Datos(object):
     Datos = []
     Resultado = []
+    Archivo = 0 # archivo de los datos
     
     def __init__(self):
-        archivo = open("datos_retinopatia.arff", "r")
+        self.Archivo = open("datos_retinopatia.arff", "r")
         datosProcesados = []
         resultado = []
-        for (key,linea) in enumerate(archivo.readlines()[24:]):
+        for (key,linea) in enumerate(self.Archivo.readlines()[24:]):
             lineaSeparada = self.separarLinea(linea)
             self.normalizarExudados(lineaSeparada)
-            lineaSeparada=self.normalizarAneurismas(lineaSeparada)
+            lineaSeparada=self.normalizarAneurismasBinarios(lineaSeparada)
             #print key
             datosProcesados.append(lineaSeparada[:-1])
             resultado.append(lineaSeparada[-1])
             #print len(lineaSeparada)
         self.Datos = datosProcesados
         self.Resultado = resultado
-        #print (datosProcesados)
+        print (datosProcesados)
+        print (len(datosProcesados[0]))
         #print (resultado)
         
     def separarLinea(self,linea):
@@ -37,20 +39,27 @@ class Datos(object):
             if linea[key]==0:
                 linea[key]=-1
     #funcion que convierte a binario el numero de microaneurismas 
-    def normalizarAneurismas(self,linea):
+    def normalizarAneurismasBinarios(self,linea):
         lista = []
-        binarios = [128,64,32,16,8,4,2,1]
+        binarios = [64,32,16,8,4,2,1]
         for (key,dato) in enumerate(linea):
             if 2 <= key <= 7:
                 linea[key]=bin(dato)
-                for x in range(0,8):
+                for x in range(0,7):
                     if binarios[x]&dato == 0:
                         lista.append(-1)
                     else:
                         lista.append(1)
         lineanueva = linea[0:2] + lista + linea[8:]
         return lineanueva
-
+    
+    #funcion que normaliza los microaneurismas
+    def normalizarAneurismas(self,linea):
+        for (key,dato) in enumerate(linea):
+            if 2 <= key <= 7:
+                if linea[key] !=-1 :
+                    linea[key] = dato/100
+        return linea 
 
 
 if __name__ == '__main__':
