@@ -10,6 +10,9 @@ class Datos(object):
     
     def __init__(self):
         self.Archivo = open("datos_retinopatia.arff", "r")
+    
+    #funcion que asigna los arreglos de datos y resultados usando la funcion de microaneurismas con binarios 
+    def datosConBinarios(self):
         datosProcesados = []
         resultado = []
         for (key,linea) in enumerate(self.Archivo.readlines()[24:]):
@@ -22,9 +25,21 @@ class Datos(object):
             #print len(lineaSeparada)
         self.Datos = datosProcesados
         self.Resultado = resultado
-        print (datosProcesados)
-        print (len(datosProcesados[0]))
-        #print (resultado)
+       
+    #funcion que asigna los arreglos de datos y resultados usando la funcion de microaneurismas normalizados 
+    def datosConEnterosNormalizados(self):
+        datosProcesados = []
+        resultado = []
+        for (key,linea) in enumerate(self.Archivo.readlines()[24:]):
+            lineaSeparada = self.separarLinea(linea)
+            self.normalizarExudados(lineaSeparada)
+            lineaSeparada=self.normalizarAneurismas(lineaSeparada)
+            #print key
+            datosProcesados.append(lineaSeparada[:-1])
+            resultado.append(lineaSeparada[-1])
+            #print len(lineaSeparada)
+        self.Datos = datosProcesados
+        self.Resultado = resultado
         
     def separarLinea(self,linea):
         return linea[:-1].split(",")
@@ -36,7 +51,7 @@ class Datos(object):
                 linea[key]=float(dato)/100
             else:
                 linea[key]=int(dato)
-            if linea[key]==0:
+            if linea[key]==0 and key != 19:
                 linea[key]=-1
     #funcion que convierte a binario el numero de microaneurismas 
     def normalizarAneurismasBinarios(self,linea):
