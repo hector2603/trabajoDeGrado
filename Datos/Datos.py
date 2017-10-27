@@ -9,7 +9,7 @@ class Datos(object):
     Archivo = 0 # archivo de los datos
     
     def __init__(self):
-        self.Archivo = open("datos_retinopatia.arff", "r")
+        self.Archivo = open("../datos_retinopatia.arff", "r")
     
     #funcion que asigna los arreglos de datos y resultados usando la funcion de microaneurismas con binarios 
     def datosConBinarios(self):
