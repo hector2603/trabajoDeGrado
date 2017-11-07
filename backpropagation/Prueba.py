@@ -6,6 +6,8 @@ Created on 12/10/2017
 import math
 import random
 import numpy as np
+import sys
+sys.path.append('../')
 from Datos.Datos import Datos
 
 class RedNeuronal(object):

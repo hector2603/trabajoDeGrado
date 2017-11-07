@@ -6,6 +6,8 @@ Created on 25/10/2017
 import math
 import numpy as np
 import random
+import sys
+sys.path.append('../')
 from Evolucion.individuo import Individuo
 from backpropagation.Prueba import RedNeuronal
 
