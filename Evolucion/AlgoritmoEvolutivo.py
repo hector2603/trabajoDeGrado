@@ -20,10 +20,15 @@ class Algoritmoevolutivo(object):
     numeroEntradas = 0
     
 
-    def __init__(self, tamanoPoblacion, numeroNeuronas,numeroEntradas):
+    def __init__(self, nombrePrueba ,tamanoPoblacion,mutacion,porcentajeReemplazo,escalado, numeroNeuronas,numeroEntradas):
         self.tamanoPoblacion = tamanoPoblacion
+        self.mutacion= mutacion
+        self.porcentajeReemplazo = porcentajeReemplazo
+        self.escalado = escalado
         self.numeroNeuronas = numeroNeuronas
         self.numeroEntradas = numeroEntradas
+        self.nombrePrueba = nombrePrueba
+        self.evolucion()
         
     def evolucion(self):
         #generar la poblacion inicial random
@@ -40,7 +45,7 @@ class Algoritmoevolutivo(object):
         mejorError = 9999999
         #evaluar la poblacionInicial
         while True:
-            #print("generacion: {}".format(generacion))
+            print("generacion: {}".format(generacion))
             sumatoriaAptitud = 0
             for ind in self.poblacion:
                 pesosCapaOculta = np.array([ind.cromosoma[(x*self.numeroEntradas):((x*self.numeroEntradas)+self.numeroEntradas)] for x in range(self.numeroNeuronas)])
@@ -53,7 +58,8 @@ class Algoritmoevolutivo(object):
                 # donde se guarda aparte cada modelo que va siendo mejor que el anterior
                 if(ind.evaluacion<mejorError):
                     mejorError = ind.evaluacion
-                    F = open("../resultadosEvolutivos/mejorResultado"+str(generacion)+".txt","w")
+                    F = open("../resultadosEvolutivos/mejorResultado"+self.nombrePrueba+".txt","w")
+                    F.write("generacion: {}".format(generacion))
                     F.write("\n pesos capa oculta 1\n")
                     for m in range(len(pesosCapaOculta)):
                             F.write(str(pesosCapaOculta[m]))
@@ -89,7 +95,7 @@ class Algoritmoevolutivo(object):
             #fin for 
             seleccionados = []# arreglo con los individuos que seran seleccionados
             #for para seleccionar los individuos
-            for x in range(int(self.tamanoPoblacion/2)):
+            for x in range(math.ceil(self.tamanoPoblacion*(self.porcentajeReemplazo))):
                 ruleta = random.random()*sumatoriaAptitud 
                 sumaBusqueda = 0
                 for ind in self.poblacion:
@@ -113,26 +119,25 @@ class Algoritmoevolutivo(object):
                         hijo2.append(padre1.cromosoma[x])
                         hijo1.append(padre2.cromosoma[x])
                         
-                    if random.random()<0.08:# probabilidad de mutacion para el hijo1 en el gen x
-                        antes = hijo1[x]
-                        hijo1[x] += (np.random.standard_normal()*4)
+                    if random.random()<self.mutacion:# probabilidad de mutacion para el hijo1 en el gen x
+                        hijo1[x] += (np.random.standard_normal())
                         
-                    if random.random()<0.08:# probabilidad de mutacion para el hijo2 en el gen x
-                        hijo2[x] += (np.random.standard_normal()*4)
+                    if random.random()<self.mutacion:# probabilidad de mutacion para el hijo2 en el gen x
+                        hijo2[x] += (np.random.standard_normal())
     
                 hijos.append(Individuo(hijo1))
                 hijos.append(Individuo(hijo2))
             # fin del cruce y creacion de los hijos
             self.poblacion.sort(key=lambda ind: ind.aptitud, reverse=True)# ordenar la poblacion para poder hacer el reemplazo
             # reemplazo
-            self.poblacion =  self.poblacion[:int(self.tamanoPoblacion/2)]+hijos# se elimina una mitad y se le agrega el arreglo de hijos
+            self.poblacion =  self.poblacion[:(math.floor(self.tamanoPoblacion*(1-self.porcentajeReemplazo)))]+hijos# se elimina una mitad y se le agrega el arreglo de hijos
+            #escalado no entra si el escalado es 1 ya que sera lo mismo
+            if self.escalado != 1 :
+                for ind in self.poblacion[:(math.floor(self.tamanoPoblacion*(1-self.porcentajeReemplazo)))]:
+                    ind.cromosoma = [x*self.escalado for x in ind.cromosoma] # realizar el escalado 
+            #fin escalado
             generacion += 1
         #fin while
-        
-
-        
-
-            
+                  
   
-e = Algoritmoevolutivo(100,19,55)
-e.evolucion()
+e = Algoritmoevolutivo("Prueba2",100,0.08,0.94,1,19,55)
