@@ -8,6 +8,7 @@ import numpy as np
 import random
 import sys
 sys.path.append('../')
+sys.path.append('/home/ec2-user/.local/lib/python3.6/site-packages')
 from Evolucion.individuo import Individuo
 from backpropagation.Prueba import RedNeuronal
 

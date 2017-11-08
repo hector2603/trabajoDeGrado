@@ -8,6 +8,7 @@ import random
 import numpy as np
 import sys
 sys.path.append('../')
+sys.path.append('/home/ec2-user/.local/lib/python3.6/site-packages')
 from Datos.Datos import Datos
 
 class RedNeuronal(object):
