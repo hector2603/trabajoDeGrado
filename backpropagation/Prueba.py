@@ -15,6 +15,7 @@ class RedNeuronal(object):
     '''
     classdocs
     '''
+    '''
     factorEntrenamiento = 0.1 # factor de entramiento de la red
     errorPermitido = 0.1 # error permitido para la condicion de parada 
     datos = 0 # clase Datos, la cual guarda el archivo de texto con los datos
@@ -25,6 +26,8 @@ class RedNeuronal(object):
     pesosCapaSalida = 0 # pesos de la capa de salida
     matrizDeConfusion = [] # matriz de confusion
     error = 0 # error global en la iteracion 
+    
+    '''
 
     def __init__(self):
         self.factorEntrenamiento = 0.1;

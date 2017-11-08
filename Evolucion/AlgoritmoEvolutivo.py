@@ -4,26 +4,25 @@ Created on 25/10/2017
 @author: hector
 '''
 import sys
+from time import gmtime
 sys.path.append('../')
 sys.path.append('/home/ec2-user/.local/lib/python3.6/site-packages')
 import math
 import numpy as np
 import random
+import threading
+import time
 from Evolucion.individuo import Individuo
 from backpropagation.Prueba import RedNeuronal
 
-class Algoritmoevolutivo(object):
+class Algoritmoevolutivo(threading.Thread):
     '''
     classdocs
     '''
-    poblacion = []
-    tamanoPoblacion = 0
-    numeroNeuronas = 0
-    redNeuronal = RedNeuronal()
-    numeroEntradas = 0
-    
 
-    def __init__(self, nombrePrueba ,tamanoPoblacion,mutacion,porcentajeReemplazo,escalado, numeroNeuronas,numeroEntradas):
+    def __init__(self, nombrePrueba ,tamanoPoblacion,mutacion,porcentajeReemplazo,escalado, numeroNeuronas,numeroEntradas,segundos):
+        self.poblacion = []
+        self.redNeuronal = RedNeuronal()
         self.tamanoPoblacion = tamanoPoblacion
         self.mutacion= mutacion
         self.porcentajeReemplazo = porcentajeReemplazo
@@ -31,6 +30,10 @@ class Algoritmoevolutivo(object):
         self.numeroNeuronas = numeroNeuronas
         self.numeroEntradas = numeroEntradas
         self.nombrePrueba = nombrePrueba
+        self.segundos = segundos
+        threading.Thread.__init__(self, name=nombrePrueba)
+    
+    def run(self):
         self.evolucion()
         
     def evolucion(self):
@@ -46,9 +49,17 @@ class Algoritmoevolutivo(object):
             self.poblacion.append(Individuo(cromosoma))
         generacion = 0
         mejorError = 9999999
+        inicial = time.time()
+        actual = time.time()
+        limite = inicial + self.segundos
         #evaluar la poblacionInicial
-        while True:
-            print("generacion: {}".format(generacion))
+        G = open("../Generaciones/generacion"+str(self.nombrePrueba)+".txt","w")
+        G.close()
+        while actual<=limite:
+            G = open("../Generaciones/generacion"+str(self.nombrePrueba)+".txt","r+")
+            G.write("Generacion numero"+str(generacion)+"\n")
+            G.close()
+            print("generacion: {}  de la prueba: {}".format(generacion,self.nombrePrueba))
             sumatoriaAptitud = 0
             for ind in self.poblacion:
                 pesosCapaOculta = np.array([ind.cromosoma[(x*self.numeroEntradas):((x*self.numeroEntradas)+self.numeroEntradas)] for x in range(self.numeroNeuronas)])
@@ -62,7 +73,9 @@ class Algoritmoevolutivo(object):
                 if(ind.evaluacion<mejorError):
                     mejorError = ind.evaluacion
                     F = open("../resultadosEvolutivos/mejorResultado"+self.nombrePrueba+".txt","w")
-                    F.write("generacion: {}".format(generacion))
+                    F.write("\n fecha de inicio {}".format(time.strftime("%a, %d %b %Y %H:%M:%S ", gmtime(inicial))))
+                    F.write("\n fecha de la generacion {}".format(time.strftime("%a, %d %b %Y %H:%M:%S ", gmtime(actual))))
+                    F.write("\n generacion: {}".format(generacion))
                     F.write("\n pesos capa oculta 1\n")
                     for m in range(len(pesosCapaOculta)):
                             F.write(str(pesosCapaOculta[m]))
@@ -82,7 +95,7 @@ class Algoritmoevolutivo(object):
                 sumatoriaAptitud += ind.aptitud
             #fin evaluacion
             #for donde se guarda toda la generacion
-            ''''F = open("../generaciones/generacion"+str(generacion)+".txt","w")
+            ''''F = open("../Generaciones/generacion"+str(generacion)+".txt","w")
             F.write("Generacion numero"+str(generacion)+"\n")
             for ind in self.poblacion:
                     F.write("Precision:  ")
@@ -140,7 +153,40 @@ class Algoritmoevolutivo(object):
                     ind.cromosoma = [x*self.escalado for x in ind.cromosoma] # realizar el escalado 
             #fin escalado
             generacion += 1
+            actual = time.time()
+        print("fin")
         #fin while
                   
-  
-e = Algoritmoevolutivo("PruebaServer",100,0.08,0.94,1,19,55)
+
+'''for num_hilo in range(1):
+    hilo = threading.Thread(name='hilo%s' %num_hilo,
+                            target=Algoritmoevolutivo, 
+                            args=("PruebaServer",100,0.08,0.94,1,19,55,30))
+    hilo.start()'''
+for x in range(10):
+    print(" iteracion numero: {}".format(x))
+    listaObjetos = []
+    listaObjetos.append(Algoritmoevolutivo('Prueba 1{}'.format(x),50,0.08,0.5,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 2{}'.format(x),50,0.08,0.5,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 3{}'.format(x),50,0.08,0.88,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 4{}'.format(x),50,0.08,0.88,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 5{}'.format(x),50,0.2,0.5,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 6{}'.format(x),50,0.2,0.5,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 7{}'.format(x),50,0.2,0.88,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 8{}'.format(x),50,0.2,0.88,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 9{}'.format(x),100,0.08,0.5,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 10{}'.format(x),100,0.08,0.5,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 11{}'.format(x),100,0.08,0.94,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 12{}'.format(x),100,0.08,0.94,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 13{}'.format(x),100,0.2,0.5,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 14{}'.format(x),100,0.2,0.5,1,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 15{}'.format(x),100,0.2,0.94,1.1 ,19,55,172800))
+    listaObjetos.append(Algoritmoevolutivo('Prueba 16{}'.format(x),100,0.2,0.94,1,19,55,172800))
+    for evolucion in listaObjetos:
+        evolucion.start()
+    time.sleep(172800)
+#e = Algoritmoevolutivo("PruebaServer",100,0.08,0.94,1,19,55)
+
+
+
+
