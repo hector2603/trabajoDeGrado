@@ -3,12 +3,12 @@ Created on 12/10/2017
 
 @author: hector
 '''
-import math
-import random
-import numpy as np
 import sys
 sys.path.append('../')
 sys.path.append('/home/ec2-user/.local/lib/python3.6/site-packages')
+import math
+import random
+import numpy as np
 from Datos.Datos import Datos
 
 class RedNeuronal(object):
