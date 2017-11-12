@@ -3,13 +3,17 @@ Created on 3/10/2017
 
 @author: hector
 '''
+from _ast import Try
 class Datos(object):
     Datos = []
     Resultado = []
     Archivo = 0 # archivo de los datos
     
     def __init__(self):
-        self.Archivo = open("../datos_retinopatia.arff", "r")
+        try:
+            self.Archivo = open("../datos_retinopatia.arff", "r")
+        except Exception as inst:
+            self.Archivo = open("datos_retinopatia.arff", "r")
     
     #funcion que asigna los arreglos de datos y resultados usando la funcion de microaneurismas con binarios 
     def datosConBinarios(self):

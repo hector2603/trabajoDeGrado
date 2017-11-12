@@ -158,11 +158,7 @@ class Algoritmoevolutivo(threading.Thread):
         #fin while
                   
 
-'''for num_hilo in range(1):
-    hilo = threading.Thread(name='hilo%s' %num_hilo,
-                            target=Algoritmoevolutivo, 
-                            args=("PruebaServer",100,0.08,0.94,1,19,55,30))
-    hilo.start()'''
+'''
 for x in range(10):
     print(" iteracion numero: {}".format(x))
     listaObjetos = []
@@ -184,8 +180,11 @@ for x in range(10):
     listaObjetos.append(Algoritmoevolutivo('Prueba 16{}'.format(x),100,0.2,0.94,1,19,55,172800))
     for evolucion in listaObjetos:
         evolucion.start()
-    time.sleep(172800)
-#e = Algoritmoevolutivo("PruebaServer",100,0.08,0.94,1,19,55)
+    time.sleep(172800)'''
+
+if __name__ == '__main__':
+    e = Algoritmoevolutivo('Prueba 2{}'.format(1),50,0.08,0.5,1,19,55,172800)
+    e.run()
 
 
 
