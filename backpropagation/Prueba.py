@@ -48,7 +48,7 @@ class RedNeuronal(object):
         try:
             return 1 / (1 + math.exp(-x))
         except OverflowError:
-            return 0
+            return 0.000000001
     def derivadaSigmoide(self,x):
         return self.sigmoide(x)*(1-self.sigmoide(x))
     def relu(self,x):
@@ -334,4 +334,3 @@ if __name__ == '__main__':
     e = RedNeuronal()
     e.ProbarModeloBackpropagation()
     e.backpropagation1CapaOculta(0.1, 0.1, e.datos.Datos, e.datos.Resultado,19)
-
