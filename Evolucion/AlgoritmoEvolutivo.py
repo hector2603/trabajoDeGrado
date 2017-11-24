@@ -183,7 +183,7 @@ for x in range(10):
     time.sleep(172800)'''
 
 if __name__ == '__main__':
-    e = Algoritmoevolutivo('Prueba 8{}'.format(1),50,0.2,0.88,1,19,55,172800)
+    e =Algoritmoevolutivo('Prueba 12{}'.format(1),100,0.08,0.94,1,19,55,172800)
     e.run()
 
 
