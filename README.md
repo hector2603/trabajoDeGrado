@@ -1,4 +1,4 @@
-# trabajoDeGrado
+# Practica investigativa.
 Implementación de algoritmos de inteligencia artificial para el diagnostico de retinopatía diabética, para la práctica investigativa y trabajo de grado, en la rama "práctica investigativa" podrá encontrar los archivos tal cual como se encuentran en el documento entregado para la práctica investigativa.
 
 ## Pruebas. 
