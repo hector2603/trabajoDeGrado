@@ -7,6 +7,7 @@ import sys
 from time import gmtime
 sys.path.append('../')
 sys.path.append('/home/ec2-user/.local/lib/python3.6/site-packages')
+from pylab import *
 import math
 import numpy as np
 import random
@@ -52,6 +53,8 @@ class Algoritmoevolutivo(threading.Thread):
         inicial = time.time()
         actual = time.time()
         limite = inicial + self.segundos
+        errorGrafica = [] # guarda el mejor error de cada generación
+        mejorErrorGrafica = [] #guarda el mejor error obtenido
         #evaluar la poblacionInicial
         G = open("../Generaciones/generacion"+str(self.nombrePrueba)+".txt","w")
         G.close()
@@ -72,6 +75,7 @@ class Algoritmoevolutivo(threading.Thread):
                 # donde se guarda aparte cada modelo que va siendo mejor que el anterior
                 if(ind.evaluacion<mejorError):
                     mejorError = ind.evaluacion
+                    mejorErrorGrafica.append(mejorError)
                     F = open("../resultadosEvolutivos/mejorResultado"+self.nombrePrueba+".txt","w")
                     F.write("\n fecha de inicio {}".format(time.strftime("%a, %d %b %Y %H:%M:%S ", gmtime(inicial))))
                     F.write("\n fecha de la generacion {}".format(time.strftime("%a, %d %b %Y %H:%M:%S ", gmtime(actual))))
@@ -145,6 +149,7 @@ class Algoritmoevolutivo(threading.Thread):
                 hijos.append(Individuo(hijo2))
             # fin del cruce y creacion de los hijos
             self.poblacion.sort(key=lambda ind: ind.aptitud, reverse=True)# ordenar la poblacion para poder hacer el reemplazo
+            errorGrafica.append(self.poblacion[0].evaluacion)
             # reemplazo
             self.poblacion =  self.poblacion[:(math.floor(self.tamanoPoblacion*(1-self.porcentajeReemplazo)))]+hijos# se elimina una mitad y se le agrega el arreglo de hijos
             #escalado no entra si el escalado es 1 ya que sera lo mismo
@@ -155,6 +160,23 @@ class Algoritmoevolutivo(threading.Thread):
             generacion += 1
             actual = time.time()
         print("fin")
+        #grafica del mejor error de cada generacion
+        plt.plot(errorGrafica)
+        plt.title("Error de cada generacion")
+        plt.xlabel("Generación")
+        plt.ylabel("ECM")
+        plt.savefig("../imagenesPruebas/error"+self.nombrePrueba+".png")
+        plt.cla()   # Borrar información de los ejes
+        plt.clf()   # Borrar un gráfico completo
+        
+        #grafica del mejor error obtenido hasta el momento
+        plt.plot(mejorErrorGrafica)
+        plt.title("Mejor error obtenido ")
+        plt.ylabel("ECM")
+        plt.savefig("../imagenesPruebas/mejorError"+self.nombrePrueba+".png")
+        plt.cla()   # Borrar información de los ejes
+        plt.clf()   # Borrar un gráfico completo
+         
         #fin while
                   
 
@@ -183,7 +205,7 @@ for x in range(10):
     time.sleep(172800)'''
 
 if __name__ == '__main__':
-    e =Algoritmoevolutivo('Prueba 15{}'.format(1),100,0.2,0.94,1.1 ,19,55,172800)
+    e =Algoritmoevolutivo('Prueba 3{}'.format(4),50,0.08,0.88,1.000001 ,19,55,21600)
     e.run()
 
 
