@@ -45,7 +45,7 @@ class Algoritmoevolutivo(threading.Thread):
             #Generacion de individuos: la primera capa de -1 a 1, la segunda capa de -10 a 10 y el bias de 0 a 1 
             capaOculta = [(random.random()-0.5)*2 for x in range(self.numeroNeuronas*self.numeroEntradas)]
             capaSalida = [(random.random()-0.5)*14 for x in range(self.numeroNeuronas)]
-            bias = [random.random(),random.random()]
+            bias = [random.random(),random.random()]# para que el bias se volucione con el cromosoma 
             cromosoma = capaOculta+capaSalida+bias
             self.poblacion.append(Individuo(cromosoma))
         generacion = 0
@@ -67,8 +67,8 @@ class Algoritmoevolutivo(threading.Thread):
             for ind in self.poblacion:
                 pesosCapaOculta = np.array([ind.cromosoma[(x*self.numeroEntradas):((x*self.numeroEntradas)+self.numeroEntradas)] for x in range(self.numeroNeuronas)])
                 pesosCapaSalida = np.array(ind.cromosoma[(55*self.numeroNeuronas):((self.numeroEntradas*self.numeroNeuronas)+self.numeroNeuronas)])
-                biasCapaOculta = ind.cromosoma[-2]
-                biasCapaSalida = ind.cromosoma[-1]
+                biasCapaOculta = 1 #ind.cromosoma[-2]
+                biasCapaSalida = 1 #ind.cromosoma[-1]
                 ind.evaluacion = self.redNeuronal.ProbarModelo(pesosCapaOculta, pesosCapaSalida, biasCapaOculta, biasCapaSalida)
                 ind.aptitud = (1/(ind.evaluacion))*100
                 ind.precision = self.redNeuronal.precision
@@ -162,7 +162,7 @@ class Algoritmoevolutivo(threading.Thread):
         print("fin")
         #grafica del mejor error de cada generacion
         plt.plot(errorGrafica)
-        plt.title("Error de cada generacion")
+        plt.title("Error de cada generación")
         plt.xlabel("Generación")
         plt.ylabel("ECM")
         plt.savefig("../imagenesPruebas/error"+self.nombrePrueba+".png")
@@ -205,9 +205,24 @@ for x in range(10):
     time.sleep(172800)'''
 
 if __name__ == '__main__':
-    e =Algoritmoevolutivo('Prueba 3{}'.format(4),50,0.08,0.88,1.000001 ,19,55,21600)
+    e = Algoritmoevolutivo('Prueba 1{}'.format(3),50,0.08,0.5,0.999999 ,19,55,21600)
     e.run()
-
+    e = Algoritmoevolutivo('Prueba 2{}'.format(3),50,0.08,0.5,1,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 3{}'.format(3),50,0.08,0.88,0.999999 ,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 4{}'.format(3),50,0.08,0.88,1,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 5{}'.format(3),50,0.2,0.5,0.999999 ,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 6{}'.format(3),50,0.2,0.5,1,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 7{}'.format(3),50,0.2,0.88,0.999999 ,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 8{}'.format(3),50,0.2,0.88,1,19,55,21600)
+    e.run()
+    e = Algoritmoevolutivo('Prueba 9{}'.format(3),100,0.08,0.5,0.999999 ,19,55,21600)
+    e.run()
 
 
 
