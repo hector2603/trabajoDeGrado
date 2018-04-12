@@ -36,11 +36,12 @@ class Datos(object):
         resultado = []
         for (key,linea) in enumerate(self.Archivo.readlines()[24:]):
             lineaSeparada = self.separarLinea(linea)
-            self.normalizarExudados(lineaSeparada)
-            lineaSeparada=self.normalizarAneurismas(lineaSeparada)
+            #self.normalizarExudados(lineaSeparada)
+            #lineaSeparada=self.normalizarAneurismas(lineaSeparada)
             #print key
-            datosProcesados.append(lineaSeparada[:-1])
-            resultado.append(lineaSeparada[-1])
+            datosEnteros = [float(x) for x in lineaSeparada[:-1]]
+            datosProcesados.append(datosEnteros)
+            resultado.append(int(lineaSeparada[-1]))
             #print len(lineaSeparada)
         self.Datos = datosProcesados
         self.Resultado = resultado
@@ -77,7 +78,7 @@ class Datos(object):
         for (key,dato) in enumerate(linea):
             if 2 <= key <= 7:
                 if linea[key] !=-1 :
-                    linea[key] = dato/100
+                    linea[key] = dato
         return linea 
 
 

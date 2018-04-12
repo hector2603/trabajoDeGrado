@@ -205,7 +205,7 @@ for x in range(10):
     time.sleep(172800)'''
 
 if __name__ == '__main__':
-    e = Algoritmoevolutivo('Prueba 1{}'.format(3),50,0.08,0.5,0.999999 ,19,55,21600)
+    ''''e = Algoritmoevolutivo('Prueba 1{}'.format(3),50,0.08,0.5,0.999999 ,19,55,21600)
     e.run()
     e = Algoritmoevolutivo('Prueba 2{}'.format(3),50,0.08,0.5,1,19,55,21600)
     e.run()
@@ -222,6 +222,20 @@ if __name__ == '__main__':
     e = Algoritmoevolutivo('Prueba 8{}'.format(3),50,0.2,0.88,1,19,55,21600)
     e.run()
     e = Algoritmoevolutivo('Prueba 9{}'.format(3),100,0.08,0.5,0.999999 ,19,55,21600)
+    e.run()'''
+    e=Algoritmoevolutivo('Prueba 10{}'.format(3),100,0.08,0.5,1,19,55,21600)
+    e.run()
+    e=Algoritmoevolutivo('Prueba 11{}'.format(3),100,0.08,0.94,1.1 ,19,55,21600)
+    e.run()
+    e=Algoritmoevolutivo('Prueba 12{}'.format(3),100,0.08,0.94,1,19,55,21600)
+    e.run()
+    e=Algoritmoevolutivo('Prueba 13{}'.format(3),100,0.2,0.5,1.1 ,19,55,21600)
+    e.run()
+    e=Algoritmoevolutivo('Prueba 14{}'.format(3),100,0.2,0.5,1,19,55,21600)
+    e.run()
+    e=Algoritmoevolutivo('Prueba 15{}'.format(3),100,0.2,0.94,1.1 ,19,55,21600)
+    e.run()
+    e=Algoritmoevolutivo('Prueba 16{}'.format(3),100,0.2,0.94,1,19,55,21600)
     e.run()
 
 
