@@ -18,8 +18,8 @@ def DistribucionDeDatos(datos):
 
 def Comparacion(datos):
     sns.set(style="ticks", color_codes=True)
-    g = sns.pairplot(datos, hue="Clase", markers=["o", "s"],vars=['X7','X16'])
-    plt.savefig('ComparaciónPeque.png')
+    g = sns.pairplot(datos, hue="Clase", markers=["o", "s"],vars=['X7','X8'])
+    plt.savefig('Comparacion_X7_X8.png')
     plt.show()
 
 def matrizCorrelación(datos):

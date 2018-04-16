@@ -1,114 +1,68 @@
-import numpy as np
+
+
 import matplotlib.pyplot as plt
-from itertools import cycle
-
-from sklearn import svm, datasets
 from sklearn.metrics import roc_curve, auc
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import label_binarize
-from sklearn.multiclass import OneVsRestClassifier
-from scipy import interp
-
-# Import some data to play with
-iris = datasets.load_iris()
-X = iris.data
-y = iris.target
-
-# Binarize the output
-y = label_binarize(y, classes=[0, 1, 2])
-n_classes = y.shape[1]
-
-# Add noisy features to make the problem harder
-random_state = np.random.RandomState(0)
-n_samples, n_features = X.shape
-X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
-
-# shuffle and split training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5,
-                                                    random_state=0)
-
-# Learn to predict each class against the other
-classifier = OneVsRestClassifier(svm.SVC(kernel='linear', probability=True,
-                                 random_state=random_state))
-y_score = classifier.fit(X_train, y_train).decision_function(X_test)
-
-# Compute ROC curve and ROC area for each class
-fpr = dict()
-tpr = dict()
-roc_auc = dict()
-print(y_score)
-print(y_score[:,0])
-for i in range(n_classes):
-    fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
-    roc_auc[i] = auc(fpr[i], tpr[i])
-
-#print(fpr)
-#print(tpr)
-#print(roc_auc)
-# Compute micro-average ROC curve and ROC area
-fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
-roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+import pickle
+from Datos.Datos import Datos
+from backpropagation.Prueba import RedNeuronal
 
 
-##############################################################################
-# Plot of a ROC curve for a specific class
-plt.figure()
-lw = 2
-plt.plot(fpr[2], tpr[2], color='darkorange',
-         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[2])
-plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic example')
-plt.legend(loc="lower right")
-plt.show()
 
+class Plot_roc:
+    
+    def __init__(self):
+        self.datos = Datos()
+        self.datos.datosConEnterosNormalizados()
+        self.entradaDeseada = self.datos.Datos
+        self.salidaDeseada = self.datos.Resultado
 
-##############################################################################
-# Plot ROC curves for the multiclass problem
+    def plot_roc_completa(self):
+        X = self.datos.Datos
+        y = self.datos.Resultado
+        
+        # cargar el modelo de SVM
+        loaded_model_SVM = pickle.load(open("../SVM/SVC with linear kernelPruebaDatosRetinopatia.sav", 'rb'))
+        Y_resultado = loaded_model_SVM.decision_function(X)
+        fprSVM, tprSVM, _ = roc_curve(y, Y_resultado)
+        roc_aucSVM = auc(fprSVM, tprSVM)
+        
+        #Cargar el modelo de Red neuronal entrenada por backpropagation
+        backpropagation = RedNeuronal()
+        Y_resultado,y=backpropagation.ProbarModeloBackpropagation()
+        fprBP, tprBP, _ = roc_curve(y, Y_resultado)
+        roc_aucBP = auc(fprBP, tprBP) 
+        
+        #Cargar el modelo de red neuronal entrenada por algoritmos genéticos
+        algoritmoGenetico = RedNeuronal()
+        Y_resultado,y=algoritmoGenetico.ProbarModeloAlgoritmosGeneticos()
+        fprAG, tprAG, _ = roc_curve(y, Y_resultado)
+        roc_aucAG = auc(fprAG, tprAG)             
+        
+        plt.figure()
+        lw = 2
+        plt.plot(fprAG, tprAG, color='darkorange',
+                 lw=lw, label='Algoritmos Genéticos (área = %0.2f)' % roc_aucAG)#plot roc Algoritmos genéticos
+        
+        plt.plot(fprBP, tprBP,
+         label='Backpropagation (área = {0:0.2f})'
+               ''.format(roc_aucBP),
+         color='deeppink', linestyle=':', linewidth=4)#plot roc Backpropagation
 
-# Compute macro-average ROC curve and ROC area
+        plt.plot(fprSVM, tprSVM,
+         label='SVM (área = {0:0.2f})'
+               ''.format(roc_aucSVM),
+         color='navy', linestyle='-.', linewidth=2)
+        
+        plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('Ratio Falsos Positivos')
+        plt.ylabel('Ratio Verdaderos Positivos')
+        plt.title("Comparación")
+        plt.legend(loc="lower right")
+        plt.show()
+        
 
-# First aggregate all false positive rates
-all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n_classes)]))
-
-# Then interpolate all ROC curves at this points
-mean_tpr = np.zeros_like(all_fpr)
-for i in range(n_classes):
-    mean_tpr += interp(all_fpr, fpr[i], tpr[i])
-
-# Finally average it and compute AUC
-mean_tpr /= n_classes
-
-fpr["macro"] = all_fpr
-tpr["macro"] = mean_tpr
-roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
-
-# Plot all ROC curves
-plt.figure()
-plt.plot(fpr["micro"], tpr["micro"],
-         label='micro-average ROC curve (area = {0:0.2f})'
-               ''.format(roc_auc["micro"]),
-         color='deeppink', linestyle=':', linewidth=4)
-
-plt.plot(fpr["macro"], tpr["macro"],
-         label='macro-average ROC curve (area = {0:0.2f})'
-               ''.format(roc_auc["macro"]),
-         color='navy', linestyle=':', linewidth=4)
-
-colors = cycle(['aqua', 'darkorange', 'cornflowerblue'])
-for i, color in zip(range(n_classes), colors):
-    plt.plot(fpr[i], tpr[i], color=color, lw=lw,
-             label='ROC curve of class {0} (area = {1:0.2f})'
-             ''.format(i, roc_auc[i]))
-
-plt.plot([0, 1], [0, 1], 'k--', lw=lw)
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Some extension of Receiver operating characteristic to multi-class')
-plt.legend(loc="lower right")
-plt.show()
+if __name__ == '__main__':
+    p = Plot_roc()
+    p.plot_roc_completa()

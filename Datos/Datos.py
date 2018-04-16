@@ -80,7 +80,21 @@ class Datos(object):
                 if linea[key] !=-1 :
                     linea[key] = dato
         return linea 
+    
+    # convierte una entrada de 19 a una entrada de 55 datos 
+    def Convertir19A55(self,entrada):
+        self.normalizarExudados(entrada)
+        entrada = self.normalizarAneurismasBinarios(entrada)
+        return entrada
+        
+            
+        
 
 
 if __name__ == '__main__':
-    Datos()
+    d = Datos()
+    da = [1.0, 1.0, 1.0, 2.0, 3.0, 4, 5, 6, 7, 7, 8, 9, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    print(d.Convertir19A55(da))
+    
+    
+    

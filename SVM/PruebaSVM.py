@@ -12,10 +12,24 @@ import math
 import pickle
 
 class SVM(object):
-    
     def __init__(self):
-
-        
+        self.datos = Datos()
+        self.datos.datosConEnterosNormalizados()
+        self.entradaDeseada = self.datos.Datos
+        self.salidaDeseada = self.datos.Resultado
+        X = self.datos.Datos
+        y = self.datos.Resultado
+        C = 1.0
+        self.models = (svm.SVC(kernel='linear', C=C),
+                  svm.LinearSVC(C=C),
+                  svm.SVC(kernel='rbf', gamma=0.7, C=C),
+                  svm.SVC(kernel='poly', degree=3, C=C))
+        titles = ('SVC with linear kernel',
+                  'LinearSVC (linear kernel)',
+                  'SVC with RBF kernel',
+                  'SVC with polynomial (degree 3) kernel')
+    
+    def GenerarModelos(self):
         self.datos = Datos()
         self.datos.datosConEnterosNormalizados()
         self.entradaDeseada = self.datos.Datos
@@ -25,10 +39,10 @@ class SVM(object):
         X,X_test,y,y_test =  train_test_split(X, y, test_size=.8,
                                                     random_state=0)
         C = 1.0  # SVM regularization parameter
-        models = (svm.SVC(kernel='linear', C=C),
+        self.models = (svm.SVC(kernel='linear', C=C),
                   svm.LinearSVC(C=C),
                   svm.SVC(kernel='rbf', gamma=0.7, C=C),
-                  svm.SVC(kernel='poly', degree=4, C=C))
+                  svm.SVC(kernel='poly', degree=3, C=C))
         titles = ('SVC with linear kernel',
                   'LinearSVC (linear kernel)',
                   'SVC with RBF kernel',
@@ -36,7 +50,7 @@ class SVM(object):
         
         for key in (0,1,2,3):
             print(titles[key])
-            model = models[key].fit(X, y)
+            model = self.models[key].fit(X, y)
             score = model.score(X_test,y_test)
             Y_resultado = model.decision_function(X_test)
             fpr, tpr, _ = roc_curve(y_test, Y_resultado)
@@ -57,8 +71,8 @@ class SVM(object):
             score = model.score(X,y)
             print(score)
             self.generarMatrizDeConfusion(model)
-            #filename = 'PruebaDatosRetinopatia.sav'+titles[key]
-            #pickle.dump(models[key], open(filename, 'wb'))
+            #filename = titles[key]+'PruebaDatosRetinopatia.sav'
+            #pickle.dump(self.models[key], open(filename, 'wb'))
     
     def generarMatrizDeConfusion(self,model ,porcentajePrueba = 0):
         self.matrizDeConfusion = [[0,0],[0,0]]
@@ -80,10 +94,25 @@ class SVM(object):
         print(self.matrizDeConfusion[1])
         
         self.precision =  (self.matrizDeConfusion[0][0] + self.matrizDeConfusion[1][1] )/elementos
-        #print(self.precision)
+        self.specificity = self.matrizDeConfusion[0][0] / (self.matrizDeConfusion[0][0] + self.matrizDeConfusion[1][0])
+        self.sensitivity = self.matrizDeConfusion[1][1] / (self.matrizDeConfusion[1][1] + self.matrizDeConfusion[0][1])
+        
+        print(self.precision,self.sensitivity,self.specificity)
             
         
+    def probarKernelLineal(self):
+        X = self.datos.Datos
+        y = self.datos.Resultado
+        loaded_model_SVM = pickle.load(open("../SVM/SVC with linear kernelPruebaDatosRetinopatia.sav", 'rb'))
+        Y_resultado = loaded_model_SVM.decision_function(X)
+        fprSVM, tprSVM, _ = roc_curve(y, Y_resultado)
+        self.roc_aucSVM = auc(fprSVM, tprSVM)
+        self.generarMatrizDeConfusion(loaded_model_SVM)
         
+    def PredictKernelLineal(self,entrada):
+        loaded_model_SVM = pickle.load(open("../SVM/SVC with linear kernelPruebaDatosRetinopatia.sav", 'rb'))
+        Y_resultado = loaded_model_SVM.predict([entrada])[0]
+        return Y_resultado
     
     
     #loaded_model = pickle.load(open(filename, 'rb'))
