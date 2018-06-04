@@ -142,11 +142,11 @@ class RedNeuronal(object):
                 self.calcularPrecision(1)
                     
                 print("error global: {}".format(self.error))
-                print("matriz de confusion")
-                print(self.matrizDeConfusion[0])
-                print(self.matrizDeConfusion[1])
-                print("precision")
-                print(self.precision)
+                #print("matriz de confusion")
+                #print(self.matrizDeConfusion[0])
+                #print(self.matrizDeConfusion[1])
+                print("precision: {}".format(self.precision))
+
                 
                 if(True):
                     mejorError = self.error
@@ -187,7 +187,7 @@ class RedNeuronal(object):
         #print(" entrada: {} \n entrada capa oculta: {} \n salida capa oculta: {} \n entrada neta capa salida: {} \n salida total: {}".format(entrada,entradaNetaCapaOculta,salidaCapaOculta,entradaNetaCapaSalida,salidaTotal))
         return salidaTotal,salidaCapaOculta,entradaNetaCapaOculta,entradaNetaCapaSalida
     
-    def backpropagation1CapaOculta(self,entrenamiento,errorPermitido,entradaDeseada,salidaDeseada,numeroNeuronasCapaOculta):
+    def backpropagation1CapaOculta(self,entradaDeseada,salidaDeseada,numeroNeuronasCapaOculta,entrenamiento=0.1,errorPermitido=0.1):
         
         self.pesosCapaOculta = pesosCapaOculta = np.random.rand(numeroNeuronasCapaOculta,len(entradaDeseada[0])) #np.array([[0.3568718 ,  0.6821255],[0.0093142 ,  0.2266969],[0.0093142 ,  0.2266969],[0.0093142 ,  0.2266969]])#pesos de la capa oculta, deben ser aleatorios
         self.pesosCapaSalida = pesosCapaSalida = np.random.rand(numeroNeuronasCapaOculta)  #np.array([0.69900,0.50459,0.5859,0.4789])# pesos de la capa de salida
@@ -200,7 +200,7 @@ class RedNeuronal(object):
         it = 0
         inicial = time.time()
         actual = time.time()
-        limite = inicial + 10800
+        limite = inicial + 900
         errorGrafica = [] # guarda el error
         precisionGrafica = [] # guarda la precision
         while actual<=limite:
@@ -236,21 +236,20 @@ class RedNeuronal(object):
                 #Calculamos el error
                 self.generarMatrizDeConfusion()
                 self.calcularPrecision(1)
-                print("precision todos los datos ")
+                #print("precision todos los datos ")
                 pricisionTotal =  self.precision
-                print(pricisionTotal)
+                #print(pricisionTotal)
                 precisionGrafica.append(pricisionTotal)
                 self.generarMatrizDeConfusion()
                 self.calcularPrecision(0.2)
                     
-                print("error global: {}".format(self.error))
-                if((it%1000)==0):
+                print("iteracion: {} -- error global: {} -- precisión: {}".format(it,self.error,pricisionTotal))
+                if((it%100)==0):
                     errorGrafica.append(self.error)
-                print("matriz de confusion")
-                print(self.matrizDeConfusion[0])
-                print(self.matrizDeConfusion[1])
-                print("precision")
-                print(self.precision)
+                #print("matriz de confusion")
+                #print(self.matrizDeConfusion[0])
+                #print(self.matrizDeConfusion[1])
+                #print("precision: {}".format(pricisionTotal))
                 
                 if(self.error<mejorError):
                     mejorError = self.error
@@ -281,16 +280,17 @@ class RedNeuronal(object):
         plt.xlabel("iteración")
         plt.ylabel("ECM")
         plt.savefig("error"+str(numeroNeuronasCapaOculta)+".png")
+        plt.show()
         plt.cla()   # Borrar información de los ejes
         plt.clf()   # Borrar un gráfico completo
         
-        #grafica del mejor error obtenido hasta el momento
-        plt.plot(precisionGrafica)
+        #grafica de la precisión obtenida hasta el momento
+        '''plt.plot(precisionGrafica)
         plt.title("Precisión con todos los datos ")
         plt.ylabel("ECM")
         plt.savefig("mejorError"+str(numeroNeuronasCapaOculta)+".png")
         plt.cla()   # Borrar información de los ejes
-        plt.clf()   # Borrar un gráfico completo
+        plt.clf()   # Borrar un gráfico completo'''
          
         '''print("numero de iteraciones: {}".format(it))
         print("pesos optimos son: pesos capa oculta: {}  \t pesos capa salida: {} ".format(pesosCapaOculta, pesosCapaSalida))
@@ -383,10 +383,26 @@ class RedNeuronal(object):
         
 if __name__ == '__main__':
     e = RedNeuronal()
-    e.ProbarModeloAlgoritmosGeneticos()
-    #error1 = e.backpropagation1CapaOculta(0.1, 0.1, e.datos.Datos, e.datos.Resultado,10)
-    #error2 = e.backpropagation1CapaOculta(0.1, 0.1, e.datos.Datos, e.datos.Resultado,19)
-    #error3 = e.backpropagation1CapaOculta(0.1, 0.1, e.datos.Datos, e.datos.Resultado,30)
+    e.backpropagation1CapaOculta(e.datos.Datos, e.datos.Resultado,10)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #error2 = e.backpropagation1CapaOculta(e.datos.Datos, e.datos.Resultado,19)
+    #error3 = e.backpropagation1CapaOculta(e.datos.Datos, e.datos.Resultado,30)
     # Creamos la figura
     '''plt.figure()
     

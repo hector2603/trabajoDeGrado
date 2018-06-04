@@ -40,13 +40,10 @@ class SVM(object):
                                                     random_state=0)
         C = 1.0  # SVM regularization parameter
         self.models = (svm.SVC(kernel='linear', C=C),
-                  svm.LinearSVC(C=C),
-                  svm.SVC(kernel='rbf', gamma=0.7, C=C),
-                  svm.SVC(kernel='poly', degree=3, C=C))
+                  svm.SVC(kernel='rbf', gamma=0.7, C=C))
+        
         titles = ('SVC with linear kernel',
-                  'LinearSVC (linear kernel)',
-                  'SVC with RBF kernel',
-                  'SVC with polynomial (degree 3) kernel')
+                  'SVC with RBF kernel')
         
         for key in (0,1,2,3):
             print(titles[key])
